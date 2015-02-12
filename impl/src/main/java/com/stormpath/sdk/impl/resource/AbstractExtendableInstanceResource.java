@@ -62,7 +62,7 @@ public abstract class AbstractExtendableInstanceResource extends AbstractInstanc
     public void save(){
         if (applyCustomDataUpdatesIfNecessary())
             try {
-                Thread.sleep(50);
+                Thread.sleep(10);
             } catch( InterruptedException e) {
                 //Let's swallow this Exception
             }
