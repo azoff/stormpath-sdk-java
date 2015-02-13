@@ -62,7 +62,7 @@ public abstract class AbstractExtendableInstanceResource extends AbstractInstanc
     public void save(){
         if (applyCustomDataUpdatesIfNecessary())
             try {
-                Thread.sleep(20); //20 ms sleep to avoid sporadic CustomData inconsistencies between the backend and the sdk
+                Thread.sleep(50); //50 ms sleep to avoid sporadic CustomData inconsistencies between the backend and the sdk
             } catch( InterruptedException e) {
                 //Let's swallow this Exception
             }
