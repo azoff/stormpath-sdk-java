@@ -200,7 +200,10 @@ class ApplicationCustomDataIT extends AbstractCustomDataIT {
     }
 
     def cleanTenantCustomData() {
-        client.currentTenant.customData.delete()
+        def customData = client.currentTenant.customData
+        if (customData.size() > 0) {
+            client.currentTenant.customData.delete()
+        }
     }
 
 }

@@ -60,16 +60,11 @@ public abstract class AbstractExtendableInstanceResource extends AbstractInstanc
 
     @Override
     public void save(){
-        if (applyCustomDataUpdatesIfNecessary())
-            try {
-                Thread.sleep(50); //50 ms sleep to avoid sporadic CustomData inconsistencies between the backend and the sdk
-            } catch( InterruptedException e) {
-                //Let's swallow this Exception
-            }
+        applyCustomDataUpdatesIfNecessary();
         super.save();
     }
 
-    protected boolean applyCustomDataUpdatesIfNecessary(){
+    protected void applyCustomDataUpdatesIfNecessary(){
         CustomData customData = getCustomData();
         Assert.isInstanceOf(DefaultCustomData.class, customData);
 
@@ -82,8 +77,6 @@ public abstract class AbstractExtendableInstanceResource extends AbstractInstanc
             if(customDataImpl.hasNewProperties()){
                 setProperty(CUSTOM_DATA, customData);
             }
-            return true;
         }
-        return false;
     }
 }
