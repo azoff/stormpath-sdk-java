@@ -43,11 +43,14 @@ import org.apache.http.HttpVersion;
 import org.apache.http.NoHttpResponseException;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.params.AllClientPNames;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
@@ -85,7 +88,7 @@ public class HttpClientRequestExecutor implements RequestExecutor {
 
     private final RequestAuthenticator requestAuthenticator;
 
-    private DefaultHttpClient httpClient;
+    private HttpClient httpClient;
 
     private BackoffStrategy backoffStrategy;
 
@@ -117,7 +120,8 @@ public class HttpClientRequestExecutor implements RequestExecutor {
         PoolingHttpClientConnectionManager connMgr = new PoolingHttpClientConnectionManager();
         connMgr.setDefaultMaxPerRoute(10);
 
-        this.httpClient = new DefaultHttpClient((ClientConnectionManager)connMgr);
+        HttpClientBuilder builder = HttpClientBuilder.create().setConnectionManager(connMgr);
+
         httpClient.getParams().setParameter(AllClientPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
         httpClient.getParams().setParameter(AllClientPNames.SO_TIMEOUT, connectionTimeout);
         httpClient.getParams().setParameter(AllClientPNames.CONNECTION_TIMEOUT, connectionTimeout);
@@ -130,12 +134,17 @@ public class HttpClientRequestExecutor implements RequestExecutor {
             httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, httpProxyHost);
 
             if (proxy.isAuthenticationRequired()) {
-                httpClient.getCredentialsProvider().setCredentials(
+                CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+                credentialsProvider.setCredentials(
                         new AuthScope(proxy.getHost(), proxy.getPort()),
                         new UsernamePasswordCredentials(proxy.getUsername(), proxy.getPassword()));
+                builder.setDefaultCredentialsProvider(credentialsProvider);
             }
 
         }
+
+        this.httpClient = builder.build();
+
     }
 
     public int getNumRetries() {
@@ -157,7 +166,7 @@ public class HttpClientRequestExecutor implements RequestExecutor {
         this.backoffStrategy = backoffStrategy;
     }
 
-    public void setHttpClient(DefaultHttpClient httpClient) {
+    public void setHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
     }
 
