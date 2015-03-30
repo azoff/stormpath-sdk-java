@@ -1,0 +1,6 @@
+
+description = 'Stormpath Java SDK :: Extensions :: Hazelcast'
+dependencies {
+  compile project(':stormpath-sdk-api')
+    compile group: 'com.hazelcast', name: 'hazelcast', version:'3.2.4'
+}

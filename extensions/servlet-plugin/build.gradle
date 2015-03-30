@@ -1,0 +1,6 @@
+
+description = 'Stormpath Java SDK :: Extensions :: Stormpath Servlet Plugin'
+dependencies {
+  compile project(':stormpath-sdk-servlet')
+  runtime project(':stormpath-sdk-httpclient')
+}

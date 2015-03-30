@@ -5,3 +5,8 @@ build
 *.iws
 *.iml
 .DS_STORE
+
+gradlew
+gradlew.bat
+.gradle/
+gradle/

@@ -1,0 +1,22 @@
+rootProject.name = 'stormpath-sdk-root'
+include ':stormpath-sdk-api'
+include ':stormpath-sdk-impl'
+include ':stormpath-sdk-oauth'
+include ':stormpath-sdk-hazelcast'
+include ':stormpath-sdk-servlet'
+include ':stormpath-servlet-plugin'
+include ':stormpath-sdk-httpclient'
+include ':stormpath-sdk-extensions'
+include ':stormpath-sdk-examples-servlet'
+include ':stormpath-sdk-examples'
+
+project(':stormpath-sdk-api').projectDir = "$rootDir/api" as File
+project(':stormpath-sdk-impl').projectDir = "$rootDir/impl" as File
+project(':stormpath-sdk-oauth').projectDir = "$rootDir/extensions/oauth" as File
+project(':stormpath-sdk-hazelcast').projectDir = "$rootDir/extensions/hazelcast" as File
+project(':stormpath-sdk-servlet').projectDir = "$rootDir/extensions/servlet" as File
+project(':stormpath-servlet-plugin').projectDir = "$rootDir/extensions/servlet-plugin" as File
+project(':stormpath-sdk-httpclient').projectDir = "$rootDir/extensions/httpclient" as File
+project(':stormpath-sdk-extensions').projectDir = "$rootDir/extensions" as File
+project(':stormpath-sdk-examples-servlet').projectDir = "$rootDir/examples/servlet" as File
+project(':stormpath-sdk-examples').projectDir = "$rootDir/examples" as File
