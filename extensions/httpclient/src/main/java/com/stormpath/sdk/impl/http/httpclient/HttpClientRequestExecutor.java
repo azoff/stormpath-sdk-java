@@ -48,7 +48,8 @@ import org.apache.http.client.params.AllClientPNames;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,10 +114,10 @@ public class HttpClientRequestExecutor implements RequestExecutor {
 
         this.httpClientRequestFactory = new HttpClientRequestFactory();
 
-        PoolingClientConnectionManager connMgr = new PoolingClientConnectionManager();
+        PoolingHttpClientConnectionManager connMgr = new PoolingHttpClientConnectionManager();
         connMgr.setDefaultMaxPerRoute(10);
 
-        this.httpClient = new DefaultHttpClient(connMgr);
+        this.httpClient = new DefaultHttpClient((ClientConnectionManager)connMgr);
         httpClient.getParams().setParameter(AllClientPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
         httpClient.getParams().setParameter(AllClientPNames.SO_TIMEOUT, connectionTimeout);
         httpClient.getParams().setParameter(AllClientPNames.CONNECTION_TIMEOUT, connectionTimeout);

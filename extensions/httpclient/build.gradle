@@ -2,7 +2,7 @@
 description = 'Stormpath Java SDK :: Extensions :: HTTP Client'
 dependencies {
   compile project(':stormpath-sdk-impl')
-    compile(group: 'org.apache.httpcomponents', name: 'httpclient', version:'4.2.2') {
+    compile(group: 'org.apache.httpcomponents', name: 'httpclient', version:'4.3.3') {
 exclude(module: 'commons-logging')
     }
     runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version:'1.6.6'
