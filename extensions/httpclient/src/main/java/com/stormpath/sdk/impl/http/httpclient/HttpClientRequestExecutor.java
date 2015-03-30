@@ -44,9 +44,11 @@ import org.apache.http.NoHttpResponseException;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.params.AllClientPNames;
 import org.apache.http.client.params.ClientPNames;
+import org.apache.http.config.ConnectionConfig;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -62,6 +64,7 @@ import java.io.InputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.Random;
 
 /**
@@ -117,21 +120,26 @@ public class HttpClientRequestExecutor implements RequestExecutor {
 
         this.httpClientRequestFactory = new HttpClientRequestFactory();
 
+        HttpClientBuilder builder = HttpClientBuilder.create();
+
         PoolingHttpClientConnectionManager connMgr = new PoolingHttpClientConnectionManager();
         connMgr.setDefaultMaxPerRoute(10);
+        builder.setConnectionManager(connMgr);
 
-        HttpClientBuilder builder = HttpClientBuilder.create().setConnectionManager(connMgr);
+        builder.setDefaultRequestConfig(RequestConfig.custom()
+                .setRedirectsEnabled(false)
+                .setSocketTimeout(connectionTimeout)
+                .setConnectTimeout(connectionTimeout)
+                .build());
 
-        httpClient.getParams().setParameter(AllClientPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-        httpClient.getParams().setParameter(AllClientPNames.SO_TIMEOUT, connectionTimeout);
-        httpClient.getParams().setParameter(AllClientPNames.CONNECTION_TIMEOUT, connectionTimeout);
-        httpClient.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, false);
-        httpClient.getParams().setParameter("http.protocol.content-charset", "UTF-8");
+        builder.setDefaultConnectionConfig(ConnectionConfig.custom()
+                .setCharset(Charset.forName("UTF-8"))
+                .build());
+
 
         if (proxy != null) {
             //We have some proxy setting to use!
-            HttpHost httpProxyHost = new HttpHost(proxy.getHost(), proxy.getPort());
-            httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, httpProxyHost);
+            builder.setProxy(new HttpHost(proxy.getHost(), proxy.getPort()));
 
             if (proxy.isAuthenticationRequired()) {
                 CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
